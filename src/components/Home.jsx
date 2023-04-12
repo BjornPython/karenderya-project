@@ -3,14 +3,13 @@ import { useEffect, useState } from "react"
 import Menu from "./Menu"
 import Orders from "./Orders"
 import OrderHistory from "./OrderHistory"
-import { getMenu, updateDbMenu } from "../apis/firebase"
+import { getMenu, getOrderHistory, updateDbMenu, updateOrderHistory } from "../apis/firebase"
 
 
 
 function Home() {
 
-    getMenu()
-
+    getOrderHistory()
     // rerender attribute is used to rerender the state when nested values are changed.
     const [currentMenu, setCurrentMenu] = useState(null)
     const [orderHistory, setOrderHistory] = useState([])
@@ -18,18 +17,22 @@ function Home() {
     const [isInitialVals, setIsInitialVals] = useState(true)
 
     useEffect(() => {
-        const callGetFoods = async () => {
+        const initializeVals = async () => {
             const menu = await getMenu()
+            const orderHistoryData = await getOrderHistory()
             setCurrentMenu({ ...menu, rerender: 0 })
+            setOrderHistory(orderHistoryData)
             setIsInitialVals(false)
         }
-        callGetFoods()
+        initializeVals()
     }, [])
 
     useEffect(() => {
         if (isInitialVals) { return }
         updateDbMenu(currentMenu)
     }, [currentMenu])
+
+
 
     const addFood = (food, price, qty) => {
         setCurrentMenu(prevMenu => {
@@ -80,7 +83,7 @@ function Home() {
         })
 
         updateDbMenu(updatedMenu) // Update Firestore
-
+        updateOrderHistory(currentOrders)
         setOrderHistory(prevHistory => { return [...prevHistory, currentOrders] })
         setCurrentOrders({})
         setCurrentMenu(prevState => { return { ...prevState, rerender: prevState.rerender += 1 } }) // rerender current Menu

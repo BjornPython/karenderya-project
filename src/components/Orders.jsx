@@ -3,9 +3,6 @@ import Order from './Order'
 
 function Orders({ currentOrders, currentMenu, updateMenu }) {
 
-    const [newMenu, setNewMenu] = useState({})
-
-
     return (
         <div className='current-orders-ctr'>
             <h1>ORDERS</h1>

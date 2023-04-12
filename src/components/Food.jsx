@@ -2,7 +2,6 @@ import React from 'react'
 
 function Food({ food, price, addOrder, decrementOrder, qty = null }) {
     if (food === "rerender") { return } // do not include rerender key
-
     return (
         <div className='food-container' style={qty <= 0 ? { color: "gray" } : { color: "white" }}>
 

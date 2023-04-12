@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 
     import { collection, getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -25,6 +25,7 @@ const firestoreDb = getFirestore(app)
 
 export const foodsCollection = collection(firestoreDb, "foods")
 
+
 export const getMenu = async () => {
   const docRef =  doc(foodsCollection, "Menu")
 
@@ -38,9 +39,20 @@ export const getMenu = async () => {
 
 export const updateDbMenu = async (updatedMenu) => {
   const docRef =  doc(foodsCollection, "Menu")
-  console.log("calling updateDoc");
   const updatedDoc = await updateDoc(docRef, {dishes: updatedMenu})
-  console.log("UPDATEDOC: ", updatedDoc);
-
 }
 
+
+export const getOrderHistory =  async() => {
+  const docRef = doc(foodsCollection, "Orders") 
+  const document = await getDoc(docRef)
+  console.log(document.data().ordered);
+  return document.data().ordered
+}
+
+
+export const updateOrderHistory = async (newOrder) => {
+  const docRef = doc(foodsCollection, "Orders") 
+  console.log("UPDATING");
+  const newDocument = await updateDoc(docRef, {ordered: arrayUnion(newOrder)})
+}

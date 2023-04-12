@@ -105,6 +105,10 @@
     overflow-y: auto;
 }
 
+.order-his-ctr h1 {
+    margin: 10px 0;
+}
+
 .order-his {
     width: 90%;
     border: 1px solid whitesmoke;

@@ -7,6 +7,7 @@ function OrderHistory({ orderHistory }) {
     }, [orderHistory])
     return (
         <div className='order-his-ctr'>
+            <h1>Order History</h1>
             {orderHistory.map((order) => {
                 return (
                     <div className="order-his">
