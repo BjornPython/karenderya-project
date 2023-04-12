@@ -1,5 +1,5 @@
 import "../styles/home.css"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Menu from "./Menu"
 import Orders from "./Orders"
 
@@ -13,9 +13,13 @@ const defaultMenu = {
 function Home() {
     const [currentMenu, setCurrentMenu] = useState(defaultMenu)
     const [orderHistory, setOrderHistory] = useState([])
-    const [currentOrders, setCurrentOrders] = useState([])
+    const [currentOrders, setCurrentOrders] = useState({})
 
     const [totalCost, setTotalCost] = useState(0)
+
+    useEffect(() => {
+        console.log("current orders; ", currentOrders);
+    }, [currentOrders])
 
     const addFood = (food, price, qty) => {
         setCurrentMenu(prevMenu => {
@@ -23,11 +27,35 @@ function Home() {
         })
     }
 
+    const addOrder = (food) => {
+        try {
+            if (currentOrders[food]) { // Check if food is already in currentOrders
+                setCurrentOrders(prevOrders => { // Increment food qty if already in currentOrders
+                    const newOrders = { ...prevOrders };
+                    if (newOrders[food]) {
+                        newOrders[food] += 1;
+                    }
+                    return newOrders
+                })
+            } else { // If food is not in yet un currentOrders
+                setCurrentOrders(prevOrders => {
+                    return { ...prevOrders, [food]: 1 } // Add the food in the currentOrders
+                })
+            }
+        } catch (err) { throw err }
+
+    }
+
+    const updateFoodQty = (food, newQty) => { // Updates the food quantity when order is done.
+        setCurrentMenu(prevMenu => {
+            return { ...prevMenu, [food]: { ...prevMenu[food], qty: newQty } }
+        })
+    }
 
     return (
         <div className="home">
-            <Menu currentMenu={currentMenu} addFood={addFood} />
-            <Orders orderHistory={orderHistory} />
+            <Menu currentMenu={currentMenu} addFood={addFood} addOrder={addOrder} />
+            <Orders currentOrders={currentOrders} />
         </div>
     )
 }

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Food from './Food'
 
 
-function Menu({ currentMenu, addFood }) {
+function Menu({ currentMenu, addFood, addOrder }) {
 
     const [showAddFood, setShowAddFood] = useState(false)
 
@@ -28,7 +28,7 @@ function Menu({ currentMenu, addFood }) {
                 {!showAddFood ? "Add food item" : "cancel"}</p>
 
             {Object.entries(currentMenu).map((vals) => {
-                return (<Food key={vals[0]} food={vals[0]} price={vals[1].price} qty={vals[1].qty} />)
+                return (<Food key={vals[0]} food={vals[0]} price={vals[1].price} qty={vals[1].qty} addOrder={addOrder} />)
             })}
 
             {showAddFood &&

@@ -1,7 +1,6 @@
 import React from 'react'
 
-function Food({ food, price, qty = null }) {
-    console.log("QTY: ", qty);
+function Food({ food, price, addOrder, qty = null }) {
     return (
         <div className='food-container'>
 
@@ -9,8 +8,10 @@ function Food({ food, price, qty = null }) {
                 <h1>{food}</h1>
                 {qty ? <p>left: {qty}</p> : <></>}
             </div>
-
-            <h1>{price} PHP</h1>
+            <div className='price-add'>
+                <h1>{price} PHP</h1>
+                <p onClick={() => { addOrder(food) }}>add 1</p>
+            </div>
 
         </div>
     )
