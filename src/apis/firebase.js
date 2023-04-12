@@ -1,8 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import {
-    getAuth, signOut
-    } from "firebase/auth"
+import { doc, getDoc, getDocs } from "firebase/firestore";
 
     import { collection, getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -26,4 +24,15 @@ const app = initializeApp(firebaseConfig);
 const firestoreDb = getFirestore(app)
 
 export const foodsCollection = collection(firestoreDb, "foods")
+
+export const getMenu = async () => {
+  const docRef =  doc(foodsCollection, "Menu")
+
+  const document = await getDoc(docRef)
+  console.log("DOCUMENT: ", document.data().dishes);
+  const menu = document.data().dishes
+
+  console.log("menu: ", menu);
+  return menu
+}
 

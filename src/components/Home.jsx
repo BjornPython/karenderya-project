@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import Menu from "./Menu"
 import Orders from "./Orders"
 import OrderHistory from "./OrderHistory"
-
+import { getMenu } from "../apis/firebase"
 
 const defaultMenu = {
     adobo: { price: 50, qty: 15 },
@@ -14,11 +14,20 @@ const defaultMenu = {
 
 function Home() {
 
+    getMenu()
+
     // rerender attribute is used to rerender the state when nested values are changed.
     const [currentMenu, setCurrentMenu] = useState({ ...defaultMenu, rerender: 0 })
     const [orderHistory, setOrderHistory] = useState([])
     const [currentOrders, setCurrentOrders] = useState({})
 
+    useEffect(() => {
+        const callGetFoods = async () => {
+            const menu = await getMenu()
+            setCurrentMenu({ ...menu, rerender: 0 })
+        }
+        callGetFoods()
+    }, [])
 
     const addFood = (food, price, qty) => {
         setCurrentMenu(prevMenu => {
@@ -42,19 +51,30 @@ function Home() {
                 })
             }
         } catch (err) { throw err }
+    }
 
+    const decrementOrder = (food) => {
+        try {
+            if (currentOrders[food]) { // Check if food is already in currentOrders
+                setCurrentOrders(prevOrders => { // Increment food qty if already in currentOrders
+                    const newOrders = { ...prevOrders };
+                    if (newOrders[food]) {
+                        newOrders[food] = 1;
+                    }
+                    return newOrders
+                })
+            }
+        } catch (err) { throw err }
     }
 
     const updateMenu = () => { // Updates the food quantity when order is done.
         const updatedMenu = currentMenu
         Object.entries(currentOrders).map(vals => {
-            console.log("FOOD: ", vals[0]);
             const food = vals[0]
             const newQty = currentMenu[food].qty - vals[1]
             updatedMenu[food].qty = newQty
             // setNewMenu({ ...currentMenu, [food]: { ...currentMenu[food], qty: newQty } })
         })
-        console.log("NEWMENU: ", updatedMenu);
         setOrderHistory(prevHistory => { return [...prevHistory, currentOrders] })
         setCurrentOrders({})
         setCurrentMenu(prevState => { return { ...prevState, rerender: prevState.rerender += 1 } }) // rerender current Menu

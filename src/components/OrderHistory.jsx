@@ -9,19 +9,19 @@ function OrderHistory({ orderHistory }) {
         <div className='order-his-ctr'>
             {orderHistory.map((order) => {
                 return (
-                    <>
+                    <div className="order-his">
                         {Object.entries(order).map((vals) => {
                             const food = vals[0]
                             const qty = vals[1]
                             console.log("FOOD: ", food, "QTY: ", qty);
                             return (
-                                <div>
-                                    <h1>{food}</h1>
-                                    <h1>{qty}</h1>
+                                <div className="order-his-info" key={food}>
+                                    <p>{food}</p>
+                                    <p>{qty}</p>
                                 </div>
                             )
                         })}
-                    </>
+                    </div>
                 )
             })}
         </div>

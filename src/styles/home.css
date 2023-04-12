@@ -78,6 +78,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+}
+
+.current-orders-ctr button {
+    position: absolute;
+    bottom: 10px;
 }
 
 .food-order {
@@ -91,4 +97,21 @@
     width: 400px;
     height: 600px;
     background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    row-gap: 20px;
+    overflow-y: auto;
+}
+
+.order-his {
+    width: 90%;
+    border: 1px solid whitesmoke;
+}
+
+.order-his-info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
