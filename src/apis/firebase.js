@@ -1,13 +1,7 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { arrayUnion, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, getFirestore } from "firebase/firestore";
 
-    import { collection, getFirestore } from "firebase/firestore";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAgkvAeO7mCo9Xd4gUg1sn5hc_Wn3IhRf0",
   authDomain: "karenderya-project.firebaseapp.com",
@@ -23,36 +17,33 @@ const app = initializeApp(firebaseConfig);
 
 const firestoreDb = getFirestore(app)
 
-export const foodsCollection = collection(firestoreDb, "foods")
+const foodsCollection = collection(firestoreDb, "foods")
 
 
+// Gets the menu from the database.
 export const getMenu = async () => {
   const docRef =  doc(foodsCollection, "Menu")
-
   const document = await getDoc(docRef)
-  console.log("DOCUMENT: ", document.data().dishes);
   const menu = document.data().dishes
-
-  console.log("menu: ", menu);
   return menu
 }
 
+// Updates the Menu document
 export const updateDbMenu = async (updatedMenu) => {
   const docRef =  doc(foodsCollection, "Menu")
   const updatedDoc = await updateDoc(docRef, {dishes: updatedMenu})
 }
 
-
+// Gets the orderHistory from firestore
 export const getOrderHistory =  async() => {
   const docRef = doc(foodsCollection, "Orders") 
   const document = await getDoc(docRef)
-  console.log(document.data().ordered);
-  return document.data().ordered
+  const data = document.data().ordered
+  return data
 }
 
-
+// adds a new order to the orderHistory.
 export const updateOrderHistory = async (newOrder) => {
   const docRef = doc(foodsCollection, "Orders") 
-  console.log("UPDATING");
   const newDocument = await updateDoc(docRef, {ordered: arrayUnion(newOrder)})
 }

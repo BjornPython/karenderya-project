@@ -4,7 +4,7 @@ import Order from './Order'
 function Orders({ currentOrders, currentMenu, updateMenu }) {
 
 
-    const [totalPrice, setTotalPrice] = useState(0)
+    const [totalPrice, setTotalPrice] = useState(0) // The total price of the current orders.
 
 
     // Calculate price for each currentOrders
@@ -19,9 +19,7 @@ function Orders({ currentOrders, currentMenu, updateMenu }) {
         setTotalPrice(price)
     }, [currentOrders])
 
-    useEffect(() => {
-        console.log("TOTAL PRICE: ", totalPrice);
-    }, [totalPrice])
+
 
     return (
         <div className='current-orders-ctr'>

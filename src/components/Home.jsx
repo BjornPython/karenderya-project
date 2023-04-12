@@ -11,12 +11,13 @@ function Home() {
 
     getOrderHistory()
     // rerender attribute is used to rerender the state when nested values are changed.
-    const [currentMenu, setCurrentMenu] = useState(null)
-    const [orderHistory, setOrderHistory] = useState([])
-    const [currentOrders, setCurrentOrders] = useState({})
-    const [isInitialVals, setIsInitialVals] = useState(true)
+    const [currentMenu, setCurrentMenu] = useState(null) // The current Menu.
+    const [orderHistory, setOrderHistory] = useState([]) // The history of the all the orders.
+    const [currentOrders, setCurrentOrders] = useState({}) // The current orders.
+    const [isInitialVals, setIsInitialVals] = useState(true) // Used to check if values are still initial.
 
     useEffect(() => {
+        // Request initial values from firestore.
         const initializeVals = async () => {
             const menu = await getMenu()
             const orderHistoryData = await getOrderHistory()
@@ -28,18 +29,20 @@ function Home() {
     }, [])
 
     useEffect(() => {
+        // Used to update the database when a 
+        // new food is added to the menu
         if (isInitialVals) { return }
         updateDbMenu(currentMenu)
     }, [currentMenu])
 
-
-
+    // Adds a food to the menu
     const addFood = (food, price, qty) => {
         setCurrentMenu(prevMenu => {
             return { ...prevMenu, [food]: { price: parseInt(price), qty: parseInt(qty) } }
         })
     }
 
+    // Adds a food to the order.
     const addOrder = (food) => {
         try {
             if (currentOrders[food]) { // Check if food is already in currentOrders
@@ -61,7 +64,7 @@ function Home() {
     const decrementOrder = (food) => {
         try {
             if (currentOrders[food]) { // Check if food is already in currentOrders
-                setCurrentOrders(prevOrders => { // Increment food qty if already in currentOrders
+                setCurrentOrders(prevOrders => { // Decrement food qty if already in currentOrders
                     const newOrders = { ...prevOrders };
                     if (newOrders[food]) {
                         if (newOrders[food] <= 1) {
@@ -74,7 +77,9 @@ function Home() {
         } catch (err) { throw err }
     }
 
-    const updateMenu = (totalPrice) => { // Updates the food quantity when order is done.
+
+    // Updates the food quantity when order is done.
+    const updateMenu = (totalPrice) => {
         const updatedMenu = currentMenu
         Object.entries(currentOrders).map(vals => {
             const food = vals[0]
@@ -82,10 +87,11 @@ function Home() {
             updatedMenu[food].qty = newQty
         })
 
-        updateDbMenu(updatedMenu) // Update Firestore
-        updateOrderHistory({ ...currentOrders, totalPrice })
-        setOrderHistory(prevHistory => { return [...prevHistory, { ...currentOrders, totalPrice }] })
-        setCurrentOrders({})
+        updateDbMenu(updatedMenu) // Update Firestore Menu document
+        updateOrderHistory({ ...currentOrders, totalPrice }) // Update Firestore orderHistory document
+
+        setOrderHistory(prevHistory => { return [...prevHistory, { ...currentOrders, totalPrice }] }) // Adds the orders and totalPrice to orderHistory.
+        setCurrentOrders({}) // Clears the current orders
         setCurrentMenu(prevState => { return { ...prevState, rerender: prevState.rerender += 1 } }) // rerender current Menu
     }
 
