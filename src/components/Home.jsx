@@ -17,9 +17,7 @@ function Home() {
 
     const [totalCost, setTotalCost] = useState(0)
 
-    useEffect(() => {
-        console.log("current orders; ", currentOrders);
-    }, [currentOrders])
+
 
     const addFood = (food, price, qty) => {
         setCurrentMenu(prevMenu => {
@@ -46,16 +44,18 @@ function Home() {
 
     }
 
-    const updateFoodQty = (food, newQty) => { // Updates the food quantity when order is done.
+    const updateFoodQty = (food, decrementVal) => { // Updates the food quantity when order is done.
         setCurrentMenu(prevMenu => {
-            return { ...prevMenu, [food]: { ...prevMenu[food], qty: newQty } }
+            return { ...prevMenu, [food]: { ...prevMenu[food], qty: prevMenu[food].qty -= decrementVal } }
         })
     }
+
+
 
     return (
         <div className="home">
             <Menu currentMenu={currentMenu} addFood={addFood} addOrder={addOrder} />
-            <Orders currentOrders={currentOrders} />
+            <Orders currentMenu={currentMenu} currentOrders={currentOrders} />
         </div>
     )
 }
