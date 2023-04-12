@@ -46,11 +46,11 @@ function Home() {
     const addOrder = (food) => {
         try {
             if (currentOrders[food]) { // Check if food is already in currentOrders
+
                 setCurrentOrders(prevOrders => { // Increment food qty if already in currentOrders
                     const newOrders = { ...prevOrders };
-                    if (newOrders[food]) {
-                        newOrders[food] += 1;
-                    }
+                    if (newOrders[food] >= currentMenu[food].qty) { return prevOrders }
+                    newOrders[food] += 1;
                     return newOrders
                 })
             } else { // If food is not in yet un currentOrders

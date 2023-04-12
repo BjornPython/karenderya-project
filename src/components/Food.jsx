@@ -11,7 +11,7 @@ function Food({ food, price, addOrder, decrementOrder, qty = null }) {
 
             <div className='price-add'>
                 <h3>{price} PHP</h3>
-                <div style={qty <= 0 ? { display: "none" } : {}}>
+                <div style={qty <= 0 ? { display: "none" } : {}} className="add-btns">
                     <p onClick={() => { addOrder(food) }} >add 1</p>
                     <p onClick={() => { decrementOrder(food) }} style={{ color: "red" }} >sub 1</p>
                 </div>

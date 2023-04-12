@@ -35,6 +35,9 @@
 
 }
 
+.add-btns {
+    min-width: 40px;
+}
 .price-add {
     display: flex;
     align-items: flex-start;
