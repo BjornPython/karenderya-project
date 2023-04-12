@@ -2,6 +2,8 @@ import "../styles/home.css"
 import { useEffect, useState } from "react"
 import Menu from "./Menu"
 import Orders from "./Orders"
+import OrderHistory from "./OrderHistory"
+
 
 const defaultMenu = {
     adobo: { price: 50, qty: 15 },
@@ -11,12 +13,11 @@ const defaultMenu = {
 }
 
 function Home() {
-    const [currentMenu, setCurrentMenu] = useState(defaultMenu)
+
+    // rerender attribute is used to rerender the state when nested values are changed.
+    const [currentMenu, setCurrentMenu] = useState({ ...defaultMenu, rerender: 0 })
     const [orderHistory, setOrderHistory] = useState([])
     const [currentOrders, setCurrentOrders] = useState({})
-
-    const [totalCost, setTotalCost] = useState(0)
-
 
 
     const addFood = (food, price, qty) => {
@@ -44,10 +45,19 @@ function Home() {
 
     }
 
-    const updateFoodQty = (food, decrementVal) => { // Updates the food quantity when order is done.
-        setCurrentMenu(prevMenu => {
-            return { ...prevMenu, [food]: { ...prevMenu[food], qty: prevMenu[food].qty -= decrementVal } }
+    const updateMenu = () => { // Updates the food quantity when order is done.
+        const updatedMenu = currentMenu
+        Object.entries(currentOrders).map(vals => {
+            console.log("FOOD: ", vals[0]);
+            const food = vals[0]
+            const newQty = currentMenu[food].qty - vals[1]
+            updatedMenu[food].qty = newQty
+            // setNewMenu({ ...currentMenu, [food]: { ...currentMenu[food], qty: newQty } })
         })
+        console.log("NEWMENU: ", updatedMenu);
+        setOrderHistory(prevHistory => { return [...prevHistory, currentOrders] })
+        setCurrentOrders({})
+        setCurrentMenu(prevState => { return { ...prevState, rerender: prevState.rerender += 1 } }) // rerender current Menu
     }
 
 
@@ -55,7 +65,8 @@ function Home() {
     return (
         <div className="home">
             <Menu currentMenu={currentMenu} addFood={addFood} addOrder={addOrder} />
-            <Orders currentMenu={currentMenu} currentOrders={currentOrders} />
+            <Orders currentMenu={currentMenu} currentOrders={currentOrders} updateMenu={updateMenu} />
+            <OrderHistory orderHistory={orderHistory} />
         </div>
     )
 }

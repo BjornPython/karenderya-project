@@ -1,6 +1,7 @@
 import React from 'react'
 
 function Food({ food, price, addOrder, qty = null }) {
+    if (food === "rerender") { return } // do not include rerender key
     return (
         <div className='food-container'>
 
