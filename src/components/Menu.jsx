@@ -2,13 +2,13 @@ import { useState } from 'react'
 import Food from './Food'
 
 
-function Menu({ currentMenu, addFood, addOrder }) {
+function Menu({ currentMenu, addFood, addOrder, decrementOrder }) {
 
     const [showAddFood, setShowAddFood] = useState(false)
 
     const [newFoodVals, setNewFoodVals] = useState({ food: "", price: 0, qty: 0 })
     const { food, price, qty } = newFoodVals
-
+    if (!currentMenu) { return }
     const handleInputChange = (e) => {
         setNewFoodVals(prevVals => {
             return { ...prevVals, [e.target.name]: e.target.value }
@@ -28,7 +28,7 @@ function Menu({ currentMenu, addFood, addOrder }) {
                 {!showAddFood ? "Add food item" : "cancel"}</p>
 
             {Object.entries(currentMenu).map((vals) => {
-                return (<Food key={vals[0]} food={vals[0]} price={vals[1].price} qty={vals[1].qty} addOrder={addOrder} />)
+                return (<Food key={vals[0]} food={vals[0]} price={vals[1].price} qty={vals[1].qty} addOrder={addOrder} decrementOrder={decrementOrder} />)
             })}
 
             {showAddFood &&

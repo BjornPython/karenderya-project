@@ -3,35 +3,37 @@ import { useEffect, useState } from "react"
 import Menu from "./Menu"
 import Orders from "./Orders"
 import OrderHistory from "./OrderHistory"
-import { getMenu } from "../apis/firebase"
+import { getMenu, updateDbMenu } from "../apis/firebase"
 
-const defaultMenu = {
-    adobo: { price: 50, qty: 15 },
-    rice: { price: 10, qty: 9999999 },
-    kaldereta: { price: 60, qty: 12 },
-    sisig: { price: 55, qty: 13 }
-}
+
 
 function Home() {
 
     getMenu()
 
     // rerender attribute is used to rerender the state when nested values are changed.
-    const [currentMenu, setCurrentMenu] = useState({ ...defaultMenu, rerender: 0 })
+    const [currentMenu, setCurrentMenu] = useState(null)
     const [orderHistory, setOrderHistory] = useState([])
     const [currentOrders, setCurrentOrders] = useState({})
+    const [isInitialVals, setIsInitialVals] = useState(true)
 
     useEffect(() => {
         const callGetFoods = async () => {
             const menu = await getMenu()
             setCurrentMenu({ ...menu, rerender: 0 })
+            setIsInitialVals(false)
         }
         callGetFoods()
     }, [])
 
+    useEffect(() => {
+        if (isInitialVals) { return }
+        updateDbMenu(currentMenu)
+    }, [currentMenu])
+
     const addFood = (food, price, qty) => {
         setCurrentMenu(prevMenu => {
-            return { ...prevMenu, [food]: { price, qty } }
+            return { ...prevMenu, [food]: { price: parseInt(price), qty: parseInt(qty) } }
         })
     }
 
@@ -59,7 +61,9 @@ function Home() {
                 setCurrentOrders(prevOrders => { // Increment food qty if already in currentOrders
                     const newOrders = { ...prevOrders };
                     if (newOrders[food]) {
-                        newOrders[food] = 1;
+                        if (newOrders[food] <= 1) {
+                            delete newOrders[food]
+                        } else { newOrders[food] -= 1; }
                     }
                     return newOrders
                 })
@@ -73,8 +77,10 @@ function Home() {
             const food = vals[0]
             const newQty = currentMenu[food].qty - vals[1]
             updatedMenu[food].qty = newQty
-            // setNewMenu({ ...currentMenu, [food]: { ...currentMenu[food], qty: newQty } })
         })
+
+        updateDbMenu(updatedMenu) // Update Firestore
+
         setOrderHistory(prevHistory => { return [...prevHistory, currentOrders] })
         setCurrentOrders({})
         setCurrentMenu(prevState => { return { ...prevState, rerender: prevState.rerender += 1 } }) // rerender current Menu
@@ -84,7 +90,7 @@ function Home() {
 
     return (
         <div className="home">
-            <Menu currentMenu={currentMenu} addFood={addFood} addOrder={addOrder} />
+            <Menu currentMenu={currentMenu} addFood={addFood} addOrder={addOrder} decrementOrder={decrementOrder} />
             <Orders currentMenu={currentMenu} currentOrders={currentOrders} updateMenu={updateMenu} />
             <OrderHistory orderHistory={orderHistory} />
         </div>

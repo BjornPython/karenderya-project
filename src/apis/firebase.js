@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { doc, getDoc, getDocs } from "firebase/firestore";
+import { doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 
     import { collection, getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -34,5 +34,13 @@ export const getMenu = async () => {
 
   console.log("menu: ", menu);
   return menu
+}
+
+export const updateDbMenu = async (updatedMenu) => {
+  const docRef =  doc(foodsCollection, "Menu")
+  console.log("calling updateDoc");
+  const updatedDoc = await updateDoc(docRef, {dishes: updatedMenu})
+  console.log("UPDATEDOC: ", updatedDoc);
+
 }
 
