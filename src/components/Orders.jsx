@@ -9,8 +9,7 @@ function Orders({ currentOrders, currentMenu }) {
         Object.entries(currentOrders).map(vals => {
             const food = vals[0]
             const newQty = currentMenu[food].qty - vals[1]
-            console.log("newQty: ", newQty);
-            setNewMenu({ ...currentMenu, [food]: newQty })
+            setNewMenu({ ...currentMenu, [food]: { ...currentMenu[food], qty: newQty } })
         })
     }, [currentOrders])
 
@@ -18,9 +17,7 @@ function Orders({ currentOrders, currentMenu }) {
         console.log("NEWMENU: ", newMenu);
     }, [newMenu])
 
-    useEffect(() => {
-        console.log("CURRENT MENU CHANGED");
-    }, [currentMenu])
+
 
     return (
         <div className='current-orders-ctr'>
