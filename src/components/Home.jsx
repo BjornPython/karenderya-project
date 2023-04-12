@@ -74,7 +74,7 @@ function Home() {
         } catch (err) { throw err }
     }
 
-    const updateMenu = () => { // Updates the food quantity when order is done.
+    const updateMenu = (totalPrice) => { // Updates the food quantity when order is done.
         const updatedMenu = currentMenu
         Object.entries(currentOrders).map(vals => {
             const food = vals[0]
@@ -83,8 +83,8 @@ function Home() {
         })
 
         updateDbMenu(updatedMenu) // Update Firestore
-        updateOrderHistory(currentOrders)
-        setOrderHistory(prevHistory => { return [...prevHistory, currentOrders] })
+        updateOrderHistory({ ...currentOrders, totalPrice })
+        setOrderHistory(prevHistory => { return [...prevHistory, { ...currentOrders, totalPrice }] })
         setCurrentOrders({})
         setCurrentMenu(prevState => { return { ...prevState, rerender: prevState.rerender += 1 } }) // rerender current Menu
     }
